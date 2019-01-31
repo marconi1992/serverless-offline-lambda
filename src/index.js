@@ -54,15 +54,21 @@ class LambdaOffline {
           payload.on('data', (chunk) => {
             body += chunk;
           });
+
           return payload.on('end', () => {
             const event = JSON.parse(body);
             this.serverlessLog(`Invoke (λ: ${functionName})`);
             if (invocationType === 'Event') {
-              handler(event);
-              return reply();
-            }
+              handler(event, null, () => {});
+              reply().code(202);
+            } else {
+              const done = res => reply(res).code(202);
+              const result = handler(event, null, done);
 
-            return handler(event).then(res => reply(res));
+              if (result && typeof result.then === 'function' && typeof result.catch === 'function') {
+                result.then(done);
+              }
+            }
           });
         },
         payload: {
