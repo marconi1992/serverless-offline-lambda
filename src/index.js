@@ -62,7 +62,9 @@ class LambdaOffline {
               handler(event, null, () => {});
               reply().code(202);
             } else {
-              const done = res => reply(res).code(202);
+              const done = (res) => {
+                reply(JSON.stringify(res)).code(202);
+              };
               const result = handler(event, null, done);
 
               if (result && typeof result.then === 'function' && typeof result.catch === 'function') {
