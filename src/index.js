@@ -50,8 +50,6 @@ class LambdaOffline {
 
           const handler = functionHelper.createHandler(options, {});
 
-          const handler = handlers[functionName];
-
           if (!handler) {
             return reply().code(404);
           }
