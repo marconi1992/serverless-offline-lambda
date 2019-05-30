@@ -27,11 +27,10 @@ class LambdaOffline {
 
     const { servicePath } = this.serverless.config;
     const serviceRuntime = this.service.provider.runtime;
-    const handlers = Object.keys(this.service.functions).reduce((acc, key) => {
+
+    const funOptions = Object.keys(this.service.functions).reduce((acc, key) => {
       const fun = this.service.getFunction(key);
-      const funOptions = functionHelper.getFunctionOptions(fun, key, servicePath, serviceRuntime);
-      const handler = functionHelper.createHandler(funOptions, {});
-      acc[key] = handler;
+      acc[key] = functionHelper.getFunctionOptions(fun, key, servicePath, serviceRuntime);
       return acc;
     }, {});
 
@@ -43,7 +42,13 @@ class LambdaOffline {
           const invocationType = req.headers['x-amz-invocation-type'];
           const { functionName } = req.params;
 
-          const handler = handlers[functionName];
+          const options = funOptions[functionName];
+
+          if (!options) {
+            return reply().code(404);
+          }
+
+          const handler = functionHelper.createHandler(options, {});
 
           if (!handler) {
             return reply().code(404);
