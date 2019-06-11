@@ -1,2 +1,7 @@
 node_modules
 .eslintcache
+
+# Only apps should have lockfiles
+npm-shrinkwrap.json
+yarn.lock
+package-lock.json
