@@ -1,12 +1,23 @@
 const Hapi = require('hapi');
 const functionHelper = require('serverless-offline/src/functionHelper');
 
+const defaultConfig = {
+  port: 4000,
+  host: 'localhost',
+};
+
 class LambdaOffline {
   constructor(serverless, options) {
     this.service = serverless.service;
     this.options = options;
     this.serverless = serverless;
     this.serverlessLog = serverless.cli.log.bind(serverless.cli);
+    this.config = Object.assign(
+      {},
+      defaultConfig,
+      (this.service.custom || {})['serverless-offline'],
+      (this.service.custom && this.service.custom.lambda) || {}
+    );
 
     this.hooks = {
       'before:offline:start:init': this.start.bind(this),
@@ -23,7 +34,7 @@ class LambdaOffline {
 
   buidServer() {
     this.server = new Hapi.Server();
-    this.server.connection({ port: 4000, host: 'localhost' });
+    this.server.connection({ port: this.config.port, host: this.config.host });
 
     const { servicePath } = this.serverless.config;
     const serviceRuntime = this.service.provider.runtime;
