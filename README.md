@@ -43,3 +43,14 @@ lambda.invoke({
 }).promise();
 
 ```
+
+## Config
+
+By default the Lambda endpoint listens on `localhost` port 4000, but this can be changed in `serverless.yml`:
+
+```
+custom:
+  lambda:
+    host: 0.0.0.0
+    port: 1234
+```
