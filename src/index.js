@@ -32,6 +32,10 @@ class LambdaOffline {
     this.serverlessLog(message);
   }
 
+  awsRequestId() {
+    return Math.random().toString(36).substring(7);
+  }
+
   buidServer() {
     this.server = new Hapi.Server();
     this.server.connection({ port: this.config.port, host: this.config.host });
@@ -72,16 +76,16 @@ class LambdaOffline {
           });
 
           return payload.on('end', () => {
-            const event = JSON.parse(body);
+            const event = body ? JSON.parse(body) : {};
             this.serverlessLog(`Invoke (λ: ${functionName})`);
             if (invocationType === 'Event') {
-              handler(event, null, () => {});
+              handler(event, { awsRequestId: this.awsRequestId() }, () => {});
               reply().code(202);
             } else {
               const done = (res) => {
                 reply(JSON.stringify(res)).code(202);
               };
-              const result = handler(event, null, done);
+              const result = handler(event, { awsRequestId: this.awsRequestId() }, done);
 
               if (result && typeof result.then === 'function' && typeof result.catch === 'function') {
                 result.then(done);
