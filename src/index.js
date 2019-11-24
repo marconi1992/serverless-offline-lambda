@@ -46,7 +46,7 @@ class LambdaOffline {
 
     const funOptionsCache = Object.keys(this.service.functions).reduce((acc, key) => {
       const fun = this.service.getFunction(key);
-      acc[key] = functionHelper.getFunctionOptions(fun, key, servicePath, serviceRuntime);
+      acc[fun.name] = functionHelper.getFunctionOptions(fun, key, servicePath, serviceRuntime);
       return acc;
     }, {});
 
