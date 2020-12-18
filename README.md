@@ -8,7 +8,7 @@ First, add Serverless Plugin to your project:
 
 `npm install serverless-offline-lambda --save-dev`
 
-Then inside your project's `serverless.yml` file add following entry to the plugins section: `serverless-offline-lamda`. If there is no plugin section you will need to add it to the file.
+Then inside your project's `serverless.yml` file add following entry to the plugins section: `serverless-offline-lambda`. If there is no plugin section you will need to add it to the file.
 
 It should look something like this:
 
